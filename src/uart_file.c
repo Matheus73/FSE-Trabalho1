@@ -9,11 +9,12 @@
 static int uart_file = -1;
 static const char *FILE_DESCRIPTOR="/dev/serial0";
 
-void uart_config(){
+int uart_config(){
 
   uart_file = open(FILE_DESCRIPTOR, O_RDWR | O_NOCTTY | O_NDELAY);      //Open in non blocking read/write mode
   if(uart_file == -1){
     printf("Erro - Não foi possível iniciar a UART.\n");
+    return -1;
   }
 
   struct termios options;
@@ -24,6 +25,7 @@ void uart_config(){
   options.c_lflag = 0;
   tcflush(uart_file, TCIFLUSH);
   tcsetattr(uart_file, TCSANOW, &options);
+  return 1;
 }
 
 int uart_write(unsigned char* message, unsigned int size){

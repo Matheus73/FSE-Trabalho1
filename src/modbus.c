@@ -18,7 +18,15 @@ unsigned char func_cod = 0x00;
 unsigned char func_sub_cod = 0x00;
 
 void modbus_config(unsigned char cod, unsigned char sub_cod){
-    uart_config();
+    int status = -1;
+    while(status == -1){
+        status = uart_config();
+        if(status == -1){
+            modbus_close();
+            usleep(300000);
+        }
+    }
+
     func_cod = cod;
     func_sub_cod = sub_cod;
 }

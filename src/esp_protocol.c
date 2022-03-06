@@ -8,7 +8,7 @@
 #define SEND_DATA 0x16
 
 float get_internal_temp(){
-modbus_config(GET_DATA, 0xc1);
+    modbus_config(GET_DATA, 0xc1);
     modbus_send(NULL, 0);
     unsigned char message[255];
 

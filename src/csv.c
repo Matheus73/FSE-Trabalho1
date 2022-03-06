@@ -19,8 +19,9 @@ void csv_append_data(Data data){
 
     fprintf(fd, "%02d,%02d,%02d,", info->tm_mday, info->tm_mon, info->tm_year%100 + 2000);
     fprintf(fd, "%02d:%02d:%02d,", info->tm_hour, info->tm_min, info->tm_sec);
-    fprintf(fd, "%02.2lf,%02.2lf,%02.2lf", data.temp_int, data.temp_ext, data.temp_ref);
+    fprintf(fd, "%02.2lf,%02.2lf,%02.2lf,", data.temp_int, data.temp_ext, data.temp_ref);
     fprintf(fd, "%02.2lf,%02.2lf\n", data.cooler_speed, data.resistor_power);
+    fclose(fd);
 }
 
 int get_data_csv(int * time, float * temp){

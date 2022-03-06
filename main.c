@@ -33,7 +33,7 @@ void curva_rotina();
 void potenciometro_rotina(){
     int comand = 0;
     while(comand == 0 || comand == 3){
-        usleep(800000);
+        usleep(500000);
         float temp_pot = get_potenciometro_temp();
         double temp_ext;
 
@@ -104,7 +104,7 @@ void curva_rotina(){
 
     int comand = 0;
     while(comand == 0 || comand == 4){
-        usleep(800000);
+        usleep(500000);
 
         if(count == next_time){
             if(time_count == size){
