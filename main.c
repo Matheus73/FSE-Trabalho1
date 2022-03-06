@@ -15,6 +15,7 @@
 #include "inc/temperature_controller.h"
 #include "inc/pid.h"
 
+float temp_passada = 25;
 
 void final_config(){
     close_temp();
@@ -43,6 +44,12 @@ void potenciometro_rotina(){
         pid_atualiza_referencia(temp_pot);
 
         float temp_int = get_internal_temp();
+
+        if(temp_int < 0 || temp_int > 100){
+            temp_int = temp_passada;
+        }
+        temp_passada = temp_int;
+
         float power = pid_controle(temp_int);
         float power_resistor, power_cooler;
         if(power < 0){
@@ -113,6 +120,11 @@ void curva_rotina(){
 
         pid_atualiza_referencia(atual_temp);
         float temp_int = get_internal_temp();
+
+        if(temp_int < 0 || temp_int > 100){
+            temp_int = temp_passada;
+        }
+        temp_passada = temp_int;
 
         float power = pid_controle(temp_int);
 
@@ -201,6 +213,7 @@ int main(){
             return -1;
     }
 
+    init_bme();
     pid_configura_constantes(kp,ki,kd);
     config_temperature();
     printf("para finaliza o programa digite: CTRL + C\n");
@@ -223,9 +236,11 @@ int main(){
                 potenciometro_rotina();
                 break;
             case 4:
+                curva_rotina();
                 break;
         }
     }
+
 
     return 0;
 
