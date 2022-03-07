@@ -1,6 +1,5 @@
 # Trabalho 1
 ## fundamentos de sistemas embarcados 2021.2
-
 Aluno | Matricula
 --|--
 Matheus Gabriel Alves Rodrigues | 180106970
@@ -10,7 +9,7 @@ Matheus Gabriel Alves Rodrigues | 180106970
 O projeto consiste em criar um sistema que faz a implementação de um sistema (que simula) 
 o controle de um forno para soldagem de placas de circuito impresso (PCBs)
 
-![exemplo de funcionamento](images/funcionamento.png)
+![exemplo de funcionamento](images/dashboardExample.gif)
 
 
 ### Como executar
