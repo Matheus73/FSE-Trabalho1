@@ -30,6 +30,70 @@ void final_config(){
 void potenciometro_rotina();
 void curva_rotina();
 
+void terminal_rotina(float temp_pot){
+    int comand = 0;
+    float temp_passada;
+    while(comand == 0){
+        usleep(500000);
+
+        double temp_ext;
+        int result = get_temp(&temp_ext);
+        result += 0;
+        // if(result == -1) return;
+
+        pid_atualiza_referencia(temp_pot);
+
+        float temp_int = get_internal_temp();
+
+        if(temp_int < 0 || temp_int > 100){
+            temp_int = temp_passada;
+        }
+        temp_passada = temp_int;
+
+        float power = pid_controle(temp_int);
+        float power_resistor, power_cooler;
+        if(power < 0){
+            power_cooler = power * -1;
+            if(power_cooler < 40) power_cooler = 40;
+            power_resistor = 0;
+        } else {
+            power_cooler = 0;
+            power_resistor = power;
+        }
+
+        send_int_control(power);
+        send_float_control(temp_pot);
+
+        lcd_init();
+        ClrLcd();
+        lcdLoc(LINE1);
+        typeln("TI");
+        typeFloat(temp_int);
+        typeln(" TE");
+        typeFloat(temp_ext);
+        lcdLoc(LINE2);
+        typeln("TR");
+        typeFloat(temp_pot);
+        typeln(" TERM.");
+        
+        printf("TI: %.2f TE: %.2f TR: %.2f\n",temp_int, temp_ext, temp_pot);
+        Data data = {temp_int, temp_ext, temp_pot, power_cooler, power_resistor};
+        csv_append_data(data);
+
+        
+        change_temperature(power);
+        comand = get_user_comand();
+    }
+    if(comand == 2){
+        final_config();
+    }
+    if(comand == 3){
+        potenciometro_rotina();
+    }
+    if(comand == 4){
+        curva_rotina();
+    }
+}
 void potenciometro_rotina(){
     int comand = 0;
     while(comand == 0 || comand == 3){
@@ -73,6 +137,7 @@ void potenciometro_rotina(){
         lcdLoc(LINE2);
         typeln("TR");
         typeFloat(temp_pot);
+        typeln(" POTEN.");
         
         printf("TI: %.2f TE: %.2f TR: %.2f\n",temp_int, temp_ext, temp_pot);
         Data data = {temp_int, temp_ext, temp_pot, power_cooler, power_resistor};
@@ -151,6 +216,7 @@ void curva_rotina(){
         lcdLoc(LINE2);
         typeln("TR");
         typeFloat(atual_temp);
+        typeln(" CURVA");
         
         printf("TI: %.2f TE: %.2f TR: %.2f\n",temp_int, temp_ext, atual_temp);
         Data data = {temp_int, temp_ext, atual_temp, power_cooler, power_resistor};
@@ -216,29 +282,53 @@ int main(){
     init_bme();
     pid_configura_constantes(kp,ki,kd);
     config_temperature();
-    printf("para finaliza o programa digite: CTRL + C\n");
 
-    int count = 0;
-    printf("ENTRANDO NO LOOP\n");
-    while(count < 240){
-        sleep(1);
-        count++;
-        printf("COUNT - %d\n", count);
+    int opt_term = 0;
 
-        int comand = get_user_comand();
-        switch(comand){
-            case 1:
-                break;
-            case 2:
-                final_config();
-                break;
-            case 3:
-                potenciometro_rotina();
-                break;
-            case 4:
-                curva_rotina();
-                break;
+    printf("GOSTARIA DE USAR O MODO TERMINAL OU O MODO UART?\n");
+    printf("1. TERMINAL\n");
+    printf("2. UART\n");
+
+    scanf("%d", &opt_term);
+
+    if(opt_term == 1){
+        printf("ENTRANDO EM MODO TERMINAL\n");
+        printf("Digite a temperatura que deseja: ");
+        float temp_ter;
+        scanf("%f",&temp_ter);
+        terminal_rotina(temp_ter);
+
+    } else if (opt_term == 2){
+
+        printf("ENTRANDO EM MODO UART\n");
+
+        printf("para finaliza o programa digite: CTRL + C\n");
+        printf("Ou mande o sinal de desligar via dashboard.\n");
+
+        int count = 0;
+        printf("AGUARDANDO COMANDO\n");
+        while(count < 240){
+            sleep(1);
+            count++;
+            // printf("COUNT - %d\n", count);
+
+            int comand = get_user_comand();
+            switch(comand){
+                case 1:
+                    break;
+                case 2:
+                    final_config();
+                    break;
+                case 3:
+                    potenciometro_rotina();
+                    break;
+                case 4:
+                    curva_rotina();
+                    break;
+            }
         }
+    } else {
+        printf("ESCOLHA INVALIDA!\n");
     }
 
 
