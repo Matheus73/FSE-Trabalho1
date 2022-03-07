@@ -19,10 +19,37 @@ O repositório possui um `Makefile` portanto se faz necessário possuir o **make
 e seguir os passos a seguir:
 
 * Limpa alguma compilação prévia:
-`make clean`
+
+```bash
+make clean
+```
 
 * Compila os scripts do projeto
-`make all`
+
+```bash
+make all
+```
 
 * Executa a aplicação
-`make run`
+
+```bash
+make run
+```
+
+### Gráficos das coletas
+
+Foram realizadas coletas para demonstrar o funcionamento do sistema, as coletas se encontram armazenadas
+na pasta `static`, contendo:
+
+Nome do arquivo | Modo | Tempo
+--|--|--
+coleta_modo_curva.csv | Modo curva | 10 minutos
+coleta_modo_potenciometro.csv | Modo potenciometro | 5 minutos
+
+##### Gráfico modo curva
+
+![Gráfico modo curva](images/graficoCurva.png)
+
+##### Gráfico modo potenciômetro
+
+![Gráfico modo potenciômetro](images/graficoPotenciometro.png)
